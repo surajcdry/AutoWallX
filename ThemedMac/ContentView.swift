@@ -29,7 +29,7 @@ struct ContentView: View {
     var body: some View {
         VStack(spacing: 20) {
             // Display current system appearance mode
-            Text("Current Mode: \(colorScheme == .dark ? "Dark" : "Light")")
+            Text("Current Mode: \(colorScheme == .dark ? "Dark 🌙" : "Light ☀️")")
                 .font(.headline)
             
             VStack(alignment: .leading, spacing: 10) {
