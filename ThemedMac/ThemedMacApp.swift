@@ -9,9 +9,19 @@ import SwiftUI
 
 @main
 struct ThemedMacApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        Settings {
+            EmptyView()
         }
+    }
+}
+
+class AppDelegate: NSObject, NSApplicationDelegate {
+    var menuBarManager: MenuBarManager!
+    
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        menuBarManager = MenuBarManager()
     }
 }
