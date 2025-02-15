@@ -208,13 +208,6 @@ struct ContentView: View {
             .cornerRadius(12)
             
             VStack(spacing: 8) {
-                Button("Support Developer") {
-                    if let url = URL(string: "https://www.surajc.com/themedmac") {
-                        NSWorkspace.shared.open(url)
-                    }
-                }
-                .buttonStyle(.link)
-                .font(.footnote)
                 
                 Button(role: .destructive) {
                     // Clear all stored data
@@ -232,11 +225,25 @@ struct ContentView: View {
                         )
                     }
                 } label: {
-                    Text("Reset All")
-                        .font(.footnote)
+                    Text("Clear wallpapers")
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
                 }
-                .buttonStyle(.link)
+                .buttonStyle(.bordered)
+                .tint(.secondary)
             }
+            .padding()
+            .background(Color(NSColor.controlBackgroundColor))
+            .cornerRadius(12)
+            
+            Button("Support Developer") {
+                if let url = URL(string: "https://www.surajc.com/themedmac") {
+                    NSWorkspace.shared.open(url)
+                }
+            }
+            .buttonStyle(.link)
+            .font(.footnote)
+            .padding(.bottom)
         }
         .frame(width: 400, height: 500)
         .padding()
@@ -281,7 +288,7 @@ struct WallpaperSection: View {
                 }
                 Spacer()
                 Button(action: onSelect) {
-                    Text("Change")
+                    Text("Pick")
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
                 }
