@@ -51,7 +51,7 @@ class MenuBarManager: NSObject {
                 backing: .buffered,
                 defer: false
             )
-            preferencesWindow?.title = "Preferences"
+            preferencesWindow?.title = "ThemedMac"
             preferencesWindow?.center()
             preferencesWindow?.contentView = NSHostingView(rootView: contentView)
         }

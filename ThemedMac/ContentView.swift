@@ -129,31 +129,28 @@ struct ContentView: View {
     
     // Add showFilePicker function here in ContentView
     private func showFilePicker() {
-        // Stop accessing current wallpapers before showing picker
-        if let url = lightModeWallpaper {
-            url.stopAccessingSecurityScopedResource()
-        }
-        if let url = darkModeWallpaper {
-            url.stopAccessingSecurityScopedResource()
-        }
-        
-        let panel = NSOpenPanel()
-        panel.allowsMultipleSelection = false
-        panel.canChooseDirectories = false
-        panel.canChooseFiles = true
-        panel.allowedContentTypes = [.jpeg, .png, .tiff, .heic]
-        
-        if let window = NSApp.windows.first {
-            panel.beginSheetModal(for: window) { [self] response in
-                handlePanelResponse(response, panel: panel)
-            }
-        } else {
-            panel.begin { [self] response in
-                handlePanelResponse(response, panel: panel)
+        DispatchQueue.main.async {
+            let panel = NSOpenPanel()
+            panel.allowsMultipleSelection = false
+            panel.canChooseDirectories = false
+            panel.canChooseFiles = true
+            panel.allowedContentTypes = [.jpeg, .png, .tiff, .heic]
+            
+            if let window = NSApplication.shared.keyWindow {
+                panel.beginSheetModal(for: window) { [self] response in
+                    if response == .OK {
+                        handlePanelResponse(response, panel: panel)
+                    }
+                }
+            } else {
+                let response = panel.runModal()
+                if response == .OK {
+                    handlePanelResponse(response, panel: panel)
+                }
             }
         }
     }
-    
+
     private func handlePanelResponse(_ response: NSApplication.ModalResponse, panel: NSOpenPanel) {
         if response == .OK, let url = panel.urls.first {
             do {
@@ -194,7 +191,11 @@ struct ContentView: View {
                     isActive: colorScheme == .light,
                     onSelect: {
                         selectingForMode = .light
-                        showFilePicker()  // Updated to use new method
+                        showFilePicker()
+                    },
+                    onClear: {
+                        lightModeWallpaper = nil
+                        storedLightBookmark = nil
                     }
                 )
                 
@@ -208,7 +209,11 @@ struct ContentView: View {
                     isActive: colorScheme == .dark,
                     onSelect: {
                         selectingForMode = .dark
-                        showFilePicker()  // Updated to use new method
+                        showFilePicker()
+                    },
+                    onClear: {
+                        darkModeWallpaper = nil
+                        storedDarkBookmark = nil
                     }
                 )
             }
@@ -249,11 +254,10 @@ struct WallpaperSection: View {
     let wallpaperURL: URL?
     let isActive: Bool
     let onSelect: () -> Void
+    let onClear: () -> Void  // Add this new property
     
-    // Remove these lines
-    // @State private var filePickerDelegate: FilePickerDelegate?
-    // private func showFilePicker() { ... }
-    
+    // In WallpaperSection, replace the HStack containing the buttons with:
+    // In WallpaperSection, update the button part:
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
@@ -270,7 +274,13 @@ struct WallpaperSection: View {
                         .foregroundColor(.secondary)
                 }
                 Spacer()
-                Button("Select", action: onSelect)
+                Button(action: onSelect) {
+                    Text("Change")
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                }
+                .buttonStyle(.bordered)
+                .tint(.secondary)
             }
             
             if let url = wallpaperURL {
