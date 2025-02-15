@@ -129,26 +129,20 @@ struct ContentView: View {
     
     // Add showFilePicker function here in ContentView
     private func showFilePicker() {
-        DispatchQueue.main.async {
-            let panel = NSOpenPanel()
-            panel.allowsMultipleSelection = false
-            panel.canChooseDirectories = false
-            panel.canChooseFiles = true
-            panel.allowedContentTypes = [.jpeg, .png, .tiff, .heic]
-            
-            if let window = NSApplication.shared.keyWindow {
-                panel.beginSheetModal(for: window) { [self] response in
-                    if response == .OK {
-                        handlePanelResponse(response, panel: panel)
-                    }
-                }
-            } else {
-                let response = panel.runModal()
-                if response == .OK {
-                    handlePanelResponse(response, panel: panel)
-                }
-            }
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
+        panel.allowedContentTypes = [.jpeg, .png, .tiff, .heic]
+        
+        // Run the panel as a modal
+        NSApp.activate(ignoringOtherApps: true)
+        let response = panel.runModal()
+        
+        if response == .OK {
+            self.handlePanelResponse(response, panel: panel)
         }
+        panel.close()
     }
 
     private func handlePanelResponse(_ response: NSApplication.ModalResponse, panel: NSOpenPanel) {
@@ -221,13 +215,36 @@ struct ContentView: View {
             .background(Color(NSColor.controlBackgroundColor))
             .cornerRadius(12)
             
-            Button("Support Developer") {
-                if let url = URL(string: "https://www.surajc.com/themedmac") {
-                    NSWorkspace.shared.open(url)
+            VStack(spacing: 8) {
+                Button("Support Developer") {
+                    if let url = URL(string: "https://www.surajc.com/themedmac") {
+                        NSWorkspace.shared.open(url)
+                    }
                 }
+                .buttonStyle(.link)
+                .font(.footnote)
+                
+                Button(role: .destructive) {
+                    // Clear all stored data
+                    lightModeWallpaper = nil
+                    darkModeWallpaper = nil
+                    storedLightBookmark = nil
+                    storedDarkBookmark = nil
+                    
+                    // Reset wallpaper to system default
+                    if let screen = NSScreen.main {
+                        try? NSWorkspace.shared.setDesktopImageURL(
+                            URL(fileURLWithPath: "/System/Library/Desktop Pictures/Monterey Graphic.heic"),
+                            for: screen,
+                            options: [:]
+                        )
+                    }
+                } label: {
+                    Text("Reset All")
+                        .font(.footnote)
+                }
+                .buttonStyle(.link)
             }
-            .buttonStyle(.link)
-            .font(.footnote)
         }
         .frame(width: 400, height: 500)
         .padding()
