@@ -186,10 +186,6 @@ struct ContentView: View {
                     onSelect: {
                         selectingForMode = .light
                         showFilePicker()
-                    },
-                    onClear: {
-                        lightModeWallpaper = nil
-                        storedLightBookmark = nil
                     }
                 )
                 
@@ -204,10 +200,6 @@ struct ContentView: View {
                     onSelect: {
                         selectingForMode = .dark
                         showFilePicker()
-                    },
-                    onClear: {
-                        darkModeWallpaper = nil
-                        storedDarkBookmark = nil
                     }
                 )
             }
@@ -271,10 +263,7 @@ struct WallpaperSection: View {
     let wallpaperURL: URL?
     let isActive: Bool
     let onSelect: () -> Void
-    let onClear: () -> Void  // Add this new property
     
-    // In WallpaperSection, replace the HStack containing the buttons with:
-    // In WallpaperSection, update the button part:
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
