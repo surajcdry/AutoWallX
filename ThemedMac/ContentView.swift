@@ -236,8 +236,8 @@ struct ContentView: View {
             .background(Color(NSColor.controlBackgroundColor))
             .cornerRadius(12)
             
-            Button("Support Developer") {
-                if let url = URL(string: "https://www.surajc.com/themedmac") {
+            Button("Learn more") {
+                if let url = URL(string: "https://www.themedmac.com/") {
                     NSWorkspace.shared.open(url)
                 }
             }
