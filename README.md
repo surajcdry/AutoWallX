@@ -1,9 +1,11 @@
-# ThemedMac
+# AutoWallX
+![Preview of mode switching](ThemedMacDemo.gif)
+
 A mac app to switch wallpapers according to the appearance of the mac (dark mode and light mode)
 
 Download the app: 
 <!-- BEGIN LATEST DOWNLOAD BUTTON -->
-[![Download zip](https://custom-icon-badges.demolab.com/badge/-Download-blue?style=for-the-badge&logo=download&logoColor=white "Download zip")](https://github.com/surajcdry/ThemedMac/raw/refs/heads/main/ThemedMac.zip)
+[![Download](https://custom-icon-badges.demolab.com/badge/-Download-blue?style=for-the-badge&logo=download&logoColor=white "Download")](https://apps.apple.com/app/autowallx/id6742269441)
 <!-- END LATEST DOWNLOAD BUTTON -->
 
 The app has a very simple functionality. It allows you to pick two separate wallpapers for light and dark mode. Then it runs in the background as a menu app. You can enable "Open at login" to ensure the app is always there. 
