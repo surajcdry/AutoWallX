@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		441DC0B82D5532010045384F /* ThemedMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ThemedMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		441DC0B82D5532010045384F /* AutoWallX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoWallX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -40,7 +40,7 @@
 		441DC0B92D5532010045384F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				441DC0B82D5532010045384F /* ThemedMac.app */,
+				441DC0B82D5532010045384F /* AutoWallX.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		441DC0B72D5532010045384F /* ThemedMac */ = {
+		441DC0B72D5532010045384F /* AutoWallX */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 441DC0C72D5532020045384F /* Build configuration list for PBXNativeTarget "ThemedMac" */;
+			buildConfigurationList = 441DC0C72D5532020045384F /* Build configuration list for PBXNativeTarget "AutoWallX" */;
 			buildPhases = (
 				441DC0B42D5532010045384F /* Sources */,
 				441DC0B52D5532010045384F /* Frameworks */,
@@ -63,11 +63,11 @@
 			fileSystemSynchronizedGroups = (
 				441DC0BA2D5532010045384F /* ThemedMac */,
 			);
-			name = ThemedMac;
+			name = AutoWallX;
 			packageProductDependencies = (
 			);
 			productName = ThemedMac;
-			productReference = 441DC0B82D5532010045384F /* ThemedMac.app */;
+			productReference = 441DC0B82D5532010045384F /* AutoWallX.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -85,7 +85,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 441DC0B32D5532010045384F /* Build configuration list for PBXProject "ThemedMac" */;
+			buildConfigurationList = 441DC0B32D5532010045384F /* Build configuration list for PBXProject "AutoWallX" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				441DC0B72D5532010045384F /* ThemedMac */,
+				441DC0B72D5532010045384F /* AutoWallX */,
 			);
 		};
 /* End PBXProject section */
@@ -251,7 +251,6 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = ThemedMac/ThemedMac.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -260,7 +259,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = ThemedMac;
+				INFOPLIST_KEY_CFBundleDisplayName = AutoWallX;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -270,7 +269,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surajc.ThemedMac;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surajc.AutoWallX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -286,7 +285,6 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = ThemedMac/ThemedMac.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -295,7 +293,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = ThemedMac;
+				INFOPLIST_KEY_CFBundleDisplayName = AutoWallX;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -305,7 +303,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.surajc.ThemedMac;
+				PRODUCT_BUNDLE_IDENTIFIER = com.surajc.AutoWallX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -316,7 +314,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		441DC0B32D5532010045384F /* Build configuration list for PBXProject "ThemedMac" */ = {
+		441DC0B32D5532010045384F /* Build configuration list for PBXProject "AutoWallX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				441DC0C52D5532020045384F /* Debug */,
@@ -325,7 +323,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		441DC0C72D5532020045384F /* Build configuration list for PBXNativeTarget "ThemedMac" */ = {
+		441DC0C72D5532020045384F /* Build configuration list for PBXNativeTarget "AutoWallX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				441DC0C82D5532020045384F /* Debug */,

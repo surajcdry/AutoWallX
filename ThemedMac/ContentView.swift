@@ -1,5 +1,18 @@
 import SwiftUI
 
+// Add this at the top of the file, before ContentView
+class ImageCache: ObservableObject {
+    private let cache = NSCache<NSURL, NSImage>()
+    
+    func object(forKey key: NSURL) -> NSImage? {
+        return cache.object(forKey: key)
+    }
+    
+    func setObject(_ obj: NSImage, forKey key: NSURL) {
+        cache.setObject(obj, forKey: key)
+    }
+}
+
 // Main view that manages wallpapers for light and dark mode
 struct ContentView: View {
     // Environment and UI state
@@ -20,6 +33,9 @@ struct ContentView: View {
     // Persistent storage
     @AppStorage("lightModeBookmark") private var storedLightBookmark: Data?
     @AppStorage("darkModeBookmark") private var storedDarkBookmark: Data?
+    
+    // Image cache
+    @StateObject private var imageCache = ImageCache()
     
     // Get current wallpaper based on system theme
     private var currentWallpaperURL: URL? {
@@ -111,69 +127,112 @@ struct ContentView: View {
             }
         }
     }
-
-    private func applyCurrentWallpaper() {
-        guard let url = currentWallpaperURL else { return }
-        
-        do {
-            if let screen = NSScreen.main {
-                try NSWorkspace.shared.setDesktopImageURL(url, for: screen, options: [:])
-            }
-        } catch {
-            errorMessage = error.localizedDescription
-            showError = true
-        }
-        
-        url.stopAccessingSecurityScopedResource()
-    }
     
     // Add showFilePicker function here in ContentView
     private func showFilePicker() {
+        // Stop accessing current wallpapers before showing picker
+        if let url = lightModeWallpaper {
+            url.stopAccessingSecurityScopedResource()
+        }
+        if let url = darkModeWallpaper {
+            url.stopAccessingSecurityScopedResource()
+        }
+        
         let panel = NSOpenPanel()
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
         panel.canChooseFiles = true
         panel.allowedContentTypes = [.jpeg, .png, .tiff, .heic]
+        panel.treatsFilePackagesAsDirectories = false
         
-        // Run the panel as a modal
         NSApp.activate(ignoringOtherApps: true)
-        let response = panel.runModal()
-        
-        if response == .OK {
-            self.handlePanelResponse(response, panel: panel)
+        panel.begin { [self] result in
+            if result == .OK {
+                self.handlePanelResponse(panel)
+            }
         }
-        panel.close()
     }
 
-    private func handlePanelResponse(_ response: NSApplication.ModalResponse, panel: NSOpenPanel) {
-        if response == .OK, let url = panel.urls.first {
-            do {
-                let bookmarkData = try url.bookmarkData(options: .withSecurityScope,
-                                                      includingResourceValuesForKeys: nil,
-                                                      relativeTo: nil)
-                
+    private func handlePanelResponse(_ panel: NSOpenPanel) {
+        guard let url = panel.url else { return }
+        
+        do {
+            // Create security scoped bookmark
+            let bookmarkData = try url.bookmarkData(
+                options: [.withSecurityScope, .securityScopeAllowOnlyReadAccess],
+                includingResourceValuesForKeys: nil,
+                relativeTo: nil
+            )
+            
+            // Verify we can resolve and access the bookmark
+            var isStale = false
+            let resolvedURL = try URL(
+                resolvingBookmarkData: bookmarkData,
+                options: .withSecurityScope,
+                relativeTo: nil,
+                bookmarkDataIsStale: &isStale
+            )
+            
+            if resolvedURL.startAccessingSecurityScopedResource() {
+                // Store the bookmark and URL
                 if selectingForMode == .dark {
                     darkBookmark = bookmarkData
                     storedDarkBookmark = bookmarkData
-                    darkModeWallpaper = url
+                    darkModeWallpaper = resolvedURL
                     if colorScheme == .dark {
                         applyCurrentWallpaper()
                     }
                 } else {
                     lightBookmark = bookmarkData
                     storedLightBookmark = bookmarkData
-                    lightModeWallpaper = url
+                    lightModeWallpaper = resolvedURL
                     if colorScheme == .light {
                         applyCurrentWallpaper()
                     }
                 }
-            } catch {
-                errorMessage = "Failed to access the selected file"
-                showError = true
+                
+                // Only stop accessing if we're not going to use it immediately
+                if (selectingForMode == .dark && colorScheme != .dark) ||
+                   (selectingForMode == .light && colorScheme != .light) {
+                    resolvedURL.stopAccessingSecurityScopedResource()
+                }
+            } else {
+                throw NSError(domain: "com.app.ThemedMac", code: -1,
+                             userInfo: [NSLocalizedDescriptionKey: "Unable to access the selected file"])
             }
+        } catch {
+            errorMessage = "Failed to access the selected file: \(error.localizedDescription)"
+            showError = true
         }
     }
 
+    private func applyCurrentWallpaper() {
+        guard let url = currentWallpaperURL else { return }
+        
+        // Dispatch wallpaper setting to background thread
+        DispatchQueue.global(qos: .userInitiated).async {
+            if url.startAccessingSecurityScopedResource() {
+                do {
+                    if let screen = NSScreen.main {
+                        try NSWorkspace.shared.setDesktopImageURL(url, for: screen, options: [:])
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        errorMessage = error.localizedDescription
+                        showError = true
+                    }
+                }
+                url.stopAccessingSecurityScopedResource()
+            }
+        }
+    }
+    
+    // Add this computed property to reduce duplicate code
+    private var isWallpaperInUse: Bool {
+        (selectingForMode == .dark && colorScheme == .dark) ||
+        (selectingForMode == .light && colorScheme == .light)
+    }
+    
     var body: some View {
         VStack(spacing: 24) {
             VStack(spacing: 20) {
@@ -188,6 +247,7 @@ struct ContentView: View {
                         showFilePicker()
                     }
                 )
+                .environmentObject(imageCache)
                 
                 Divider()
                 
@@ -202,6 +262,7 @@ struct ContentView: View {
                         showFilePicker()
                     }
                 )
+                .environmentObject(imageCache)
             }
             .padding()
             .background(Color(NSColor.controlBackgroundColor))
@@ -236,14 +297,13 @@ struct ContentView: View {
             .background(Color(NSColor.controlBackgroundColor))
             .cornerRadius(12)
             
-            Button("Learn more") {
-                if let url = URL(string: "https://www.themedmac.com/") {
+            Button("Support Developer") {
+                if let url = URL(string: "https://www.surajc.com/autowallx") {
                     NSWorkspace.shared.open(url)
                 }
             }
             .buttonStyle(.link)
             .font(.footnote)
-            .padding(.bottom)
         }
         .frame(width: 400, height: 500)
         .padding()
@@ -264,12 +324,28 @@ struct ContentView: View {
 
 // Component for displaying wallpaper preview and selection
 struct WallpaperSection: View {
+    @EnvironmentObject private var imageCache: ImageCache
+    
     let title: String
     let icon: String
     let iconColor: Color
     let wallpaperURL: URL?
     let isActive: Bool
     let onSelect: () -> Void
+    
+    private func loadImage(from url: URL) -> NSImage? {
+        // Try to get from cache first
+        if let cachedImage = imageCache.object(forKey: url as NSURL) {
+            return cachedImage
+        }
+        
+        // Load from disk and cache it
+        if let image = NSImage(contentsOf: url) {
+            imageCache.setObject(image, forKey: url as NSURL)
+            return image
+        }
+        return nil
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -288,7 +364,7 @@ struct WallpaperSection: View {
                 }
                 Spacer()
                 Button(action: onSelect) {
-                    Text("Pick")
+                    Text("Change")
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
                 }
@@ -297,28 +373,32 @@ struct WallpaperSection: View {
             }
             
             if let url = wallpaperURL {
-                if let image = NSImage(contentsOf: url) {
-                    Image(nsImage: image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(height: 120)
-                        .cornerRadius(8)
-                        .clipped()
-                } else {
-                    Color.gray.opacity(0.2)
-                        .frame(height: 120)
-                        .cornerRadius(8)
-                        .overlay(
-                            VStack {
-                                Image(systemName: "exclamationmark.triangle")
-                                    .font(.largeTitle)
-                                    .foregroundColor(.gray)
-                                Text("Failed to load preview")
-                                    .font(.caption)
-                                    .foregroundColor(.gray)
-                            }
-                        )
+                Group {
+                    if let image = loadImage(from: url) {
+                        Image(nsImage: image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: 120)
+                            .cornerRadius(8)
+                            .clipped()
+                    } else {
+                        Color.gray.opacity(0.2)
+                            .frame(height: 120)
+                            .cornerRadius(8)
+                            .overlay(
+                                VStack {
+                                    Image(systemName: "exclamationmark.triangle")
+                                        .font(.largeTitle)
+                                        .foregroundColor(.gray)
+                                    Text("Failed to load preview")
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                }
+                            )
+                    }
                 }
+                .transition(.opacity)
+                .animation(.easeInOut, value: url)
             } else {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.gray.opacity(0.2))

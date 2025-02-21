@@ -1,7 +1,4 @@
 # ThemedMac
-
-![Preview of app](ThemedMacDemo.gif)
-
 A mac app to switch wallpapers according to the appearance of the mac (dark mode and light mode)
 
 Download the app: 

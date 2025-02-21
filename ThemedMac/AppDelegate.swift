@@ -72,7 +72,7 @@ class ThemedMacAppDelegate: NSObject, NSApplicationDelegate {
             backing: .buffered,
             defer: false
         )
-        window.title = "ThemedMac Preferences"
+        window.title = "AutoWallX Preferences"
         window.contentView = NSHostingView(rootView: ContentView())
         window.center()
         window.level = .normal
