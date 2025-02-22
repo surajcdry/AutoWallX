@@ -21,7 +21,7 @@ class ThemedMacAppDelegate: NSObject, NSApplicationDelegate {
         
         menu.addItem(NSMenuItem(title: "Preferences...", action: #selector(showPreferences), keyEquivalent: ","))
         
-        // Add Open at Login menu item
+        // Open at Login menu item
         let openAtLoginItem = NSMenuItem(title: "Open at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
         openAtLoginItem.state = getLaunchAtLoginState()
         menu.addItem(openAtLoginItem)
@@ -93,7 +93,7 @@ class ThemedMacAppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
-// Add window delegate methods
+// Window delegate methods
 extension ThemedMacAppDelegate: NSWindowDelegate {
     func windowWillClose(_ notification: Notification) {
         if notification.object as? NSWindow == preferencesWindow {

@@ -1,6 +1,6 @@
 //
-//  ThemedMacApp.swift
-//  ThemedMac
+//  AutoWallX.swift
+//  AutoWall X
 //
 //  Created by Suraj Chaudhary on 06/02/2025.
 //
@@ -17,7 +17,6 @@ struct ThemedMacApp: App {
         }
         .defaultSize(width: 0, height: 0)
         .commands {
-            // Remove default menu items
             CommandGroup(replacing: .appInfo) {}
             CommandGroup(replacing: .systemServices) {}
             CommandGroup(replacing: .newItem) {}

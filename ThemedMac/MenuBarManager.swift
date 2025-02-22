@@ -2,7 +2,7 @@ import SwiftUI
 import ServiceManagement
 
 class MenuBarManager: NSObject {
-    // Make menu a strong reference to prevent deallocation
+
     private var menu: NSMenu?
     private var statusItem: NSStatusItem!
     private var preferencesWindow: NSWindow?

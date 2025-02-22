@@ -1,6 +1,5 @@
 import SwiftUI
 
-// Add this at the top of the file, before ContentView
 class ImageCache: ObservableObject {
     private let cache = NSCache<NSURL, NSImage>()
     
@@ -48,14 +47,17 @@ struct ContentView: View {
             guard let url = urls.first else { return }
             
             do {
-                let bookmarkData = try url.bookmarkData(options: .withSecurityScope,
-                                                      includingResourceValuesForKeys: nil,
-                                                      relativeTo: nil)
+                let bookmarkData = try url.bookmarkData(
+                    options: .withSecurityScope,
+                    includingResourceValuesForKeys: nil,
+                    relativeTo: nil
+                )
                 
                 if selectingForMode == .dark {
                     darkBookmark = bookmarkData
                     storedDarkBookmark = bookmarkData
                     darkModeWallpaper = url
+                    
                     if colorScheme == .dark {
                         applyCurrentWallpaper()
                     }
@@ -82,17 +84,20 @@ struct ContentView: View {
         if let bookmark = storedLightBookmark {
             var isStale = false
             do {
-                let url = try URL(resolvingBookmarkData: bookmark,
-                                options: .withSecurityScope,
-                                relativeTo: nil,
-                                bookmarkDataIsStale: &isStale)
+                let url = try URL(
+                    resolvingBookmarkData: bookmark,
+                    options: .withSecurityScope,
+                    relativeTo: nil,
+                    bookmarkDataIsStale: &isStale
+                )
                 
                 if url.startAccessingSecurityScopedResource() {
                     lightModeWallpaper = url
                     if isStale {
-                        if let newBookmark = try? url.bookmarkData(options: .withSecurityScope,
-                                                                 includingResourceValuesForKeys: nil,
-                                                                 relativeTo: nil) {
+                        if let newBookmark = try? url.bookmarkData(
+                            options: .withSecurityScope,
+                            includingResourceValuesForKeys: nil,
+                            relativeTo: nil) {
                             storedLightBookmark = newBookmark
                         }
                     }
@@ -128,7 +133,7 @@ struct ContentView: View {
         }
     }
     
-    // Add showFilePicker function here in ContentView
+    // File picker function
     private func showFilePicker() {
         // Stop accessing current wallpapers before showing picker
         if let url = lightModeWallpaper {
@@ -227,7 +232,6 @@ struct ContentView: View {
         }
     }
     
-    // Add this computed property to reduce duplicate code
     private var isWallpaperInUse: Bool {
         (selectingForMode == .dark && colorScheme == .dark) ||
         (selectingForMode == .light && colorScheme == .light)
@@ -307,7 +311,7 @@ struct ContentView: View {
         }
         .frame(width: 400, height: 500)
         .padding()
-        // Remove .fileImporter modifier since we're using NSOpenPanel
+ 
         .alert("Error", isPresented: $showError) {
             Button("OK", role: .cancel) { }
         } message: {
