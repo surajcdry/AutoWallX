@@ -218,7 +218,8 @@ struct ContentView: View {
         DispatchQueue.global(qos: .userInitiated).async {
             if url.startAccessingSecurityScopedResource() {
                 do {
-                    if let screen = NSScreen.main {
+                    // Apply wallpaper to all available screens
+                    for screen in NSScreen.screens {
                         try NSWorkspace.shared.setDesktopImageURL(url, for: screen, options: [:])
                     }
                 } catch {
@@ -301,8 +302,8 @@ struct ContentView: View {
             .background(Color(NSColor.controlBackgroundColor))
             .cornerRadius(12)
             
-            Button("Support Developer") {
-                if let url = URL(string: "https://www.surajc.com/autowallx") {
+            Button("About Developer") {
+                if let url = URL(string: "https://www.surajc.com/") {
                     NSWorkspace.shared.open(url)
                 }
             }
